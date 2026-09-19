@@ -156,7 +156,7 @@
                         <label class="btn btn-outline-light text-start w-100 p-3 rounded-3 border d-flex align-items-center
                                       {{ $payment_method === 'cod' ? 'border-success bg-success-subtle' : '' }}"
                                for="pm_cod">
-                            <div class="p-2 rounded-circle me-3" style="background:#d1fae5;">
+                            <div class="p-2 rounded-circle me-3 icon-success-bg">
                                 <i class="fas fa-money-bill-wave text-success fa-lg"></i>
                             </div>
                             <div>
@@ -177,7 +177,7 @@
                         <label class="btn btn-outline-light text-start w-100 p-3 rounded-3 border d-flex align-items-center
                                       {{ $payment_method === 'bakong_khqr' ? 'border-primary bg-primary-subtle' : '' }}"
                                for="pm_khqr">
-                            <div class="p-2 rounded-circle me-3" style="background:#dbeafe;">
+                            <div class="p-2 rounded-circle me-3 icon-primary-bg">
                                 <i class="fas fa-qrcode text-primary fa-lg"></i>
                             </div>
                             <div>

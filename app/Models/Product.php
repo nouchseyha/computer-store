@@ -44,6 +44,21 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function getAverageRatingAttribute(): float
+    {
+        return round($this->reviews()->avg('rating') ?? 0, 1);
+    }
+
+    public function getReviewCountAttribute(): int
+    {
+        return $this->reviews()->count();
+    }
+
     public function getImageUrlAttribute(): string
     {
         if (!$this->image) return asset('img/default-product.png');

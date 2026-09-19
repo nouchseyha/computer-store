@@ -262,6 +262,28 @@
         .hero-section h1 { font-size: 3rem; font-weight: 800; line-height: 1.15; letter-spacing: -.5px; }
         @media(max-width:768px) { .hero-section h1 { font-size: 2rem; } }
 
+        /* ── Google Translate widget ── */
+        #google_translate_element .goog-te-gadget-simple {
+            background: rgba(255,255,255,.08) !important;
+            border: 1px solid rgba(255,255,255,.2) !important;
+            border-radius: 20px !important;
+            padding: 3px 10px !important;
+            font-size: .78rem !important;
+        }
+        #google_translate_element .goog-te-gadget-simple span,
+        #google_translate_element .goog-te-gadget-simple a {
+            color: rgba(255,255,255,.85) !important;
+            font-family: 'Inter', sans-serif !important;
+            font-size: .78rem !important;
+            text-decoration: none !important;
+        }
+        /* Hide the arrow icon text */
+        #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span:last-child { display:none; }
+        /* Hide the top banner Google adds */
+        .goog-te-banner-frame.skiptranslate { display:none !important; }
+        body { top: 0 !important; }
+        .skiptranslate { display:none !important; }
+
         /* ── Section title ── */
         .section-title {
             font-size: 1.5rem;
@@ -374,6 +396,11 @@
             </form>
 
             <ul class="navbar-nav align-items-center gap-2">
+                {{-- Language switcher --}}
+                <li class="nav-item">
+                    <div id="google_translate_element"></div>
+                </li>
+
                 {{-- Theme toggle --}}
                 <li class="nav-item">
                     <button id="themeToggle" onclick="toggleTheme()">
@@ -520,6 +547,20 @@
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+{{-- Google Translate --}}
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,km',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false,
+    }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 @livewireScripts
 @stack('scripts')
 

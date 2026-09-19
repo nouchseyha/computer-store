@@ -95,7 +95,17 @@
         </div>
     </div>
 
-    <div class="mt-3">{{ $products->links() }}</div>
+    <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="text-muted" style="font-size:.78rem;">
+            @if($products->total() > 0)
+                Showing <strong>{{ $products->firstItem() }}</strong>–<strong>{{ $products->lastItem() }}</strong>
+                of <strong>{{ $products->total() }}</strong> results
+            @else
+                No results
+            @endif
+        </div>
+        <div>{{ $products->links() }}</div>
+    </div>
 
     {{-- Delete Confirm Modal --}}
     @if($modal === 'delete')

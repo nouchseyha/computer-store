@@ -73,6 +73,19 @@
                     <p class="text-muted mb-3" style="font-size:.92rem;">{{ $product->short_description }}</p>
                 @endif
 
+                {{-- Rating summary --}}
+                @php $avg = $product->reviews()->avg('rating') ?? 0; $cnt = $product->reviews()->count(); @endphp
+                @if($cnt > 0)
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        @for($i = 1; $i <= 5; $i++)
+                            <i class="{{ $i <= round($avg) ? 'fas' : 'far' }} fa-star"
+                               style="color:#f59e0b;font-size:.95rem;"></i>
+                        @endfor
+                        <span class="fw-semibold" style="font-size:.9rem;">{{ number_format($avg, 1) }}</span>
+                        <span class="text-muted small">({{ $cnt }} {{ Str::plural('review', $cnt) }})</span>
+                    </div>
+                @endif
+
                 {{-- Price --}}
                 <div class="mb-3 d-flex align-items-baseline gap-2">
                     @if($product->sale_price)
@@ -95,14 +108,12 @@
                 {{-- Stock status --}}
                 <div class="mb-3">
                     @if($product->stock > 0)
-                        <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill"
-                              style="background:#d1fae5;color:#065f46;font-size:.82rem;font-weight:600;">
+                        <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill stock-in">
                             <i class="fas fa-check-circle"></i>
                             In Stock — {{ $product->stock }} available
                         </span>
                     @else
-                        <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill"
-                              style="background:#fee2e2;color:#991b1b;font-size:.82rem;font-weight:600;">
+                        <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill stock-out">
                             <i class="fas fa-times-circle"></i>
                             Out of Stock
                         </span>
@@ -137,8 +148,7 @@
                         <button wire:click="addToCart"
                                 wire:loading.attr="disabled"
                                 wire:target="addToCart"
-                                class="btn btn-lg fw-bold flex-grow-1 rounded-3"
-                                style="background:#ff6b00;border:none;color:#fff;">
+                                class="btn btn-lg fw-bold flex-grow-1 rounded-3 btn-accent">
                             <span wire:loading.remove wire:target="addToCart">
                                 <i class="fas fa-cart-plus me-2"></i>Add to Cart
                             </span>
@@ -148,10 +158,17 @@
                         </button>
                     </div>
 
-                    <a href="{{ route('cart.index') }}"
-                       class="btn btn-primary btn-lg w-100 rounded-3 mt-2 fw-bold">
-                        <i class="fas fa-bolt me-2"></i>Buy Now
-                    </a>
+                    <button wire:click="buyNow"
+                            wire:loading.attr="disabled"
+                            wire:target="buyNow"
+                            class="btn btn-primary btn-lg w-100 rounded-3 mt-2 fw-bold">
+                        <span wire:loading.remove wire:target="buyNow">
+                            <i class="fas fa-bolt me-2"></i>Buy Now
+                        </span>
+                        <span wire:loading wire:target="buyNow">
+                            <span class="spinner-border spinner-border-sm me-2"></span>Going to checkout...
+                        </span>
+                    </button>
                 @else
                     <button class="btn btn-lg w-100 rounded-3 fw-bold mt-2" disabled
                             style="background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border);">
@@ -176,6 +193,9 @@
         </div>
     </div>
     @endif
+
+    {{-- Reviews --}}
+    <livewire:product-reviews :product="$product" />
 
     {{-- Related Products --}}
     @if($related->count())

@@ -24,6 +24,14 @@ class ProductShow extends Component
         session()->flash('cart_success', 'Added to cart!');
     }
 
+    public function buyNow(): void
+    {
+        $qty = max(1, min($this->quantity, $this->product->stock));
+        Cart::add($this->product->id, $qty);
+        $this->dispatch('cart-updated');
+        $this->redirect(route('checkout.index'));
+    }
+
     public function render()
     {
         $related = Product::where('category_id', $this->product->category_id)

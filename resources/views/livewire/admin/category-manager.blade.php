@@ -30,7 +30,17 @@
             </table>
         </div>
     </div>
-    <div class="mt-3">{{ $categories->links() }}</div>
+    <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="text-muted" style="font-size:.78rem;">
+            @if($categories->total() > 0)
+                Showing <strong>{{ $categories->firstItem() }}</strong>–<strong>{{ $categories->lastItem() }}</strong>
+                of <strong>{{ $categories->total() }}</strong> results
+            @else
+                No results
+            @endif
+        </div>
+        <div>{{ $categories->links() }}</div>
+    </div>
 
     @if($modal === 'create' || $modal === 'edit')
     <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,.5);">

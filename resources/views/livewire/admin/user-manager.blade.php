@@ -21,6 +21,7 @@
                         <th>Email</th>
                         <th>Orders</th>
                         <th>Role</th>
+                        <th>Status</th>
                         <th>Joined</th>
                         <th>Actions</th>
                     </tr>
@@ -52,6 +53,24 @@
                                 <span class="badge bg-danger">Admin</span>
                             @endif
                         </td>
+                        {{-- Online status --}}
+                        <td>
+                            @if($user->isOnline())
+                                <span class="d-inline-flex align-items-center gap-1"
+                                      style="font-size:.78rem;font-weight:600;color:#22c55e;">
+                                    <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;
+                                                 box-shadow:0 0 0 2px rgba(34,197,94,.25);display:inline-block;
+                                                 animation:pulse 2s infinite;"></span>
+                                    Online
+                                </span>
+                            @else
+                                <span class="d-inline-flex align-items-center gap-1 text-muted"
+                                      style="font-size:.78rem;">
+                                    <span style="width:8px;height:8px;border-radius:50%;background:var(--border);display:inline-block;"></span>
+                                    {{ $user->lastSeenLabel() }}
+                                </span>
+                            @endif
+                        </td>
                         <td class="text-muted small">{{ $user->created_at->format('M d, Y') }}</td>
                         <td>
                             <button wire:click="openEdit({{ $user->id }})"
@@ -76,7 +95,17 @@
         </div>
     </div>
 
-    <div class="mt-3">{{ $users->links() }}</div>
+    <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="text-muted" style="font-size:.78rem;">
+            @if($users->total() > 0)
+                Showing <strong>{{ $users->firstItem() }}</strong>–<strong>{{ $users->lastItem() }}</strong>
+                of <strong>{{ $users->total() }}</strong> results
+            @else
+                No results
+            @endif
+        </div>
+        <div>{{ $users->links() }}</div>
+    </div>
 
     {{-- ── Create / Edit Modal ── --}}
     @if($modal === 'create' || $modal === 'edit')
@@ -90,8 +119,11 @@
                     <button wire:click="closeModal" class="btn-close"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- Honeypot fields to prevent browser autofill --}}
+                    <input type="text" style="display:none;" autocomplete="username" tabindex="-1">
+                    <input type="password" style="display:none;" autocomplete="new-password" tabindex="-1">
+
                     <div class="mb-3">
-                        <label class="form-label">Full Name *</label>
                         <input type="text" wire:model="name"
                                class="form-control @error('name') is-invalid @enderror"
                                placeholder="John Doe">
@@ -108,12 +140,27 @@
 
                     <div class="mb-3">
                         <label class="form-label">
-                            Password {{ $modal === 'edit' ? '(leave blank to keep current)' : '*' }}
+                            Password {{ $modal === 'edit' ? '<span class="text-muted fw-normal">(leave blank to keep current)</span>' : '*' }}
                         </label>
-                        <input type="password" wire:model="password"
-                               class="form-control @error('password') is-invalid @enderror"
-                               placeholder="{{ $modal === 'edit' ? 'Leave blank to keep current' : 'Min. 8 characters' }}">
-                        @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div class="input-group">
+                            <input type="password"
+                                   wire:model.defer="password"
+                                   id="admin_user_password"
+                                   autocomplete="new-password"
+                                   class="form-control @error('password') is-invalid @enderror"
+                                   placeholder="{{ $modal === 'edit' ? 'Leave blank to keep current' : 'Min. 8 characters' }}">
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    onclick="const f=document.getElementById('admin_user_password');f.type=f.type==='password'?'text':'password';">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        @error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+                        @if($modal === 'edit')
+                            <div class="text-muted small mt-1">
+                                <i class="fas fa-info-circle me-1"></i>Only fill this if you want to change the password.
+                            </div>
+                        @endif
                     </div>
 
                     <div class="mb-1">

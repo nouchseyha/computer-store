@@ -39,13 +39,23 @@
                 {{ $product->category->name ?? '' }}
                 @if($product->brand) · {{ $product->brand }} @endif
             </div>
-            <h6 class="card-title mb-2 fw-semibold lh-sm" style="font-size:.88rem;">
+            <h6 class="card-title mb-1 fw-semibold lh-sm" style="font-size:.88rem;">
                 <a href="{{ route('shop.show', $product->slug) }}"
                    class="text-decoration-none"
                    style="color:var(--text);">
                     {{ Str::limit($product->name, 48) }}
                 </a>
             </h6>
+            @php $avg = $product->reviews()->avg('rating') ?? 0; $cnt = $product->reviews()->count(); @endphp
+            @if($cnt > 0)
+                <div class="d-flex align-items-center gap-1 mb-1">
+                    @for($i = 1; $i <= 5; $i++)
+                        <i class="{{ $i <= round($avg) ? 'fas' : 'far' }} fa-star"
+                           style="color:#f59e0b;font-size:.65rem;"></i>
+                    @endfor
+                    <span class="text-muted" style="font-size:.72rem;">({{ $cnt }})</span>
+                </div>
+            @endif
 
             <div class="mt-auto">
                 {{-- Price --}}

@@ -41,7 +41,17 @@
             </table>
         </div>
     </div>
-    <div class="mt-3">{{ $orders->links() }}</div>
+    <div class="mt-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div class="text-muted" style="font-size:.78rem;">
+            @if($orders->total() > 0)
+                Showing <strong>{{ $orders->firstItem() }}</strong>–<strong>{{ $orders->lastItem() }}</strong>
+                of <strong>{{ $orders->total() }}</strong> results
+            @else
+                No results
+            @endif
+        </div>
+        <div>{{ $orders->links() }}</div>
+    </div>
 
     {{-- Order Detail Modal --}}
     @if($modal === 'view' && $viewOrder)
